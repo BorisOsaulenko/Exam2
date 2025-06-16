@@ -1,0 +1,64 @@
+[
+    {
+        "name": "Buy groceries",
+        "deadline": "2025-06-15T18:00:00.000Z",
+        "description": "Purchase milk, eggs, bread, and fruits from the supermarket.",
+        "tags": [
+            "shopping",
+            "errands"
+        ],
+        "priority": 2,
+        "id": 1
+    },
+    {
+        "name": "Finish React project",
+        "deadline": "2025-06-20T23:59:00.000Z",
+        "description": "Complete all components and write unit tests for the final submission.",
+        "tags": [
+            "work",
+            "coding"
+        ],
+        "priority": 1,
+        "id": 2
+    },
+    {
+        "id": 6,
+        "name": "Name",
+        "priority": 4,
+        "tasks": [
+            {
+                "name": "Read a book",
+                "deadline": "2025-06-30T20:00:00.000Z",
+                "description": "Finish reading 'Atomic Habits' by James Clear.",
+                "tags": [
+                    "leisure",
+                    "reading"
+                ],
+                "priority": 4,
+                "id": 3
+            },
+            {
+                "name": "Call the dentist",
+                "deadline": "2025-06-13T10:00:00.000Z",
+                "description": "Schedule a check-up appointment for next week.",
+                "tags": [
+                    "health",
+                    "personal"
+                ],
+                "priority": 3,
+                "id": 4
+            },
+            {
+                "name": "Plan weekend trip",
+                "deadline": "2025-06-18T12:00:00.000Z",
+                "description": "Research destinations and book accommodation for a short getaway.",
+                "tags": [
+                    "travel",
+                    "planning"
+                ],
+                "priority": 2,
+                "id": 5
+            }
+        ]
+    }
+]
