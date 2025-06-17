@@ -29,11 +29,19 @@ export const ToDoList: FC<ToDoListProps> = ({
 
     if ("tasks" in data) {
       return data.tasks.find((t) =>
-        lookingFor.every((q) => t.name.toLowerCase().includes(q.toLowerCase()))
+        lookingFor.every(
+          (q) =>
+            t.name.toLowerCase().includes(q.toLowerCase()) ||
+            t.description.toLowerCase().includes(q.toLowerCase()) ||
+            t.tags.some((t) => t.toLowerCase().includes(q.toLowerCase()))
+        )
       );
     } else {
-      return lookingFor.every((q) =>
-        data.name.toLowerCase().includes(q.toLowerCase())
+      return lookingFor.every(
+        (q) =>
+          data.name.toLowerCase().includes(q.toLowerCase()) ||
+          data.description.toLowerCase().includes(q.toLowerCase()) ||
+          data.tags.some((t) => t.toLowerCase().includes(q.toLowerCase()))
       );
     }
   };

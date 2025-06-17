@@ -43,8 +43,11 @@ export const Project: FC<Props> = ({
   const checkQuery = (task: ToDoItemDataProps) => {
     const lookingFor = query.split(" ");
 
-    return lookingFor.every((q) =>
-      task.name.toLowerCase().includes(q.toLowerCase())
+    return lookingFor.every(
+      (q) =>
+        task.name.toLowerCase().includes(q.toLowerCase()) ||
+        task.description.toLowerCase().includes(q.toLowerCase()) ||
+        task.tags.some((t) => t.toLowerCase().includes(q.toLowerCase()))
     );
   };
 
