@@ -1,0 +1,35 @@
+﻿@page
+@model IndexModel
+@{
+ViewData["Title"] = "Home page";
+Layout = "_Layout";
+}
+
+<div class="tw:2xl:columns-4 tw:lg:columns-3 tw:columns-2 tw:gap-3">
+    @foreach (var Poll in Model.Polls)
+    {
+    <div class="tw:break-inside-avoid tw:mb-4">
+        <partial name="Poll/_PollCardPartial" Model="@Poll" />
+    </div>
+    }
+</div>
+
+<script>
+    const filterInput = document.getElementById('filterInput');
+    if (!filterInput) console.error("filterInput not found");
+    else {
+        filterInput.oninput = function () {
+            const filter = filterInput.value.toLowerCase();
+            const cards = document.getElementsByClassName('pollCard');
+            for (let i = 0; i < cards.length; i++) {
+                const title = cards[i].getElementsByClassName('card-title')[0].textContent.toLowerCase();
+                const description = cards[i].getElementsByClassName('card-text')[0].textContent.toLowerCase();
+                if (!title.includes(filter) && !description.includes(filter)) {
+                    cards[i].classList.add('tw:hidden');
+                } else {
+                    cards[i].classList.remove('tw:hidden');
+                }
+            }
+        }
+    }
+</script>

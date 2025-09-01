@@ -1,0 +1,20 @@
+@model PollCardPartialModel
+
+<div class="card pollCard">
+    <img src="@Model.Poll.ImageUrl" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Poll.Title</h5>
+        <p class="card-text">@Model.Poll.Description</p>
+        <div class=" tw:flex tw:justify-between tw:items-center tw:w-full">
+            <a href="/Poll/@Model.Poll.Id" class="btn btn-primary">Vote</a>
+
+            @if (Model.LoggedIn) {
+            @if (Model.Voted) {
+            <i class="bi bi-check-circle-fill tw:text-green-500 tw:text-2xl"></i>
+            } else {
+            <div class="tw:w-6 tw:h-6 tw:rounded-full tw:bg-transparent tw:border-1 tw:border-gray-400"></div>
+            }
+            }
+        </div>
+    </div>
+</div>

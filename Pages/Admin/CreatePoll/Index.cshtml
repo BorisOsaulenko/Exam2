@@ -1,0 +1,153 @@
+@page
+@model CreatePollModel
+@{
+ViewData["Title"] = "Create Poll";
+Layout = "_Layout";
+}
+
+<style>
+    input {
+        outline: none;
+    }
+</style>
+
+
+<form method="post" asp-ajax="true" asp-ajax-mode="replace" asp-ajax-update="this" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="tw:flex tw:justify-between tw:gap-10">
+        <div class="tw:w-1/3 tw:h-fit tw:border-1 tw:flex tw:justify-center tw:items-center tw:relative">
+            <label for="image" id="imageLabel" class="btn">Select Image</label>
+            <input type="file" asp-for="Image" id="image" class="tw:hidden" accept=".jpg,.jpeg,.png,.gif" required>
+            <img id="previewImage" src="#" alt="" class="tw:w-full tw:h-auto tw:hidden">
+            <button type="button" id="closeImage"
+                class="btn-close tw:hidden tw:absolute tw:bottom-2 tw:right-2 tw:bg-white" aria-label="Close"></button>
+        </div>
+        <div class="tw:flex tw:flex-col tw:w-2/3">
+            <input type="text" name="Title" placeholder="Poll Title" class="tw:font-semibold tw:text-4xl" required />
+            <input type="text" name="Description" placeholder="Poll Description" class="tw:text-gray-400 tw:font-light"
+                required>
+
+            <div class="tw:flex tw:w-full tw:justify-between tw:mt-10 tw:gap-10">
+                <div class="tw:flex tw:flex-col tw:grow" id="optionsContainer">
+                    @for (int index = 0; index < Model.Options.Count; index++) { <div
+                        class="tw:flex tw:items-center tw:gap-5">
+                        <input type="radio" name="SelectedOption" value="@index" id="option@index" disabled />
+                        <input asp-for="Options[index]" class="tw:pb-0.5" placeholder="Option @(index + 1)" required />
+                </div>
+                }
+                <div class="tw:flex tw:items-center tw:justify-end tw:gap-3 tw:mt-2 tw:w-full">
+                    <button type="button" id="addOption" asp-page-handler="AddOption"
+                        class="btn btn-primary tw:text-sm">Add
+                        Option</button>
+                    <button type="button" id="removeOption" asp-page-handler="RemoveOption"
+                        class="btn btn-danger tw:text-sm" disabled>Remove
+                        Option</button>
+                </div>
+            </div>
+
+            <div class="tw:flex tw:flex-col tw:gap-5">
+                <button asp-page-handler="Vote" class="btn btn-primary" disabled>Vote/Unvote</button>
+                <button asp-page-handler="VoteAnonymous" class="btn btn-secondary" disabled>Vote
+                    anonymously</button>
+            </div>
+        </div>
+
+        <div class="tw:flex tw:w-full tw:justify-between tw:mt-10 tw:items-center">
+            <div class="tw:w-60 tw:h-60">
+                <canvas id="pie-chart"></canvas>
+            </div>
+
+            <button type="submit" class="btn btn-success tw:text-sm tw:px-8 tw:py-2">Submit</button>
+
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const labels = @Json.Serialize(Model.Options);
+            const data = Array.from({ length: labels.length }, () => Math.floor(Math.random() * 10) + 1);
+
+            new Chart(document.getElementById("pie-chart"), {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ["#FF5733", "#33FF57", "#3357FF", "#F1C40F", "#9B59B6"] // add more colors if needed
+                    }]
+                },
+                options: {
+                    responsive: false
+                }
+            });
+        </script>
+    </div>
+
+    </div>
+</form>
+
+<script>
+    const optionsContainer = document.getElementById('optionsContainer');
+    let optionCount = @Model.Options.Count;
+
+    const removeButton = document.getElementById('removeOption');
+    const addButton = document.getElementById('addOption');
+
+    addButton.addEventListener('click', () => {
+        const div = document.createElement('div');
+        div.className = "tw:flex tw:items-center tw:gap-5";
+        div.innerHTML = `<input type="radio" name="SelectedOption" value="${optionCount}" disabled />
+                     <input type="text" name="Options[${optionCount}]" placeholder="Option ${optionCount + 1}" />`;
+        optionsContainer.insertBefore(div, optionsContainer.lastElementChild);
+        optionCount++;
+        if (optionCount > 2) removeButton.disabled = false;
+        if (optionCount === 8) addButton.disabled = true;
+    });
+
+    removeButton.addEventListener('click', () => {
+        if (optionsContainer.lastElementChild) {
+            optionsContainer.removeChild(optionsContainer.children[optionsContainer.children.length - 2]);
+            optionCount--;
+            if (optionCount === 2) removeButton.disabled = true;
+            if (optionCount < 8) addButton.disabled = false;
+        }
+    });
+</script>
+
+<script>
+    const imageInput = document.getElementById('image');
+    const label = document.getElementById('imageLabel');
+    const closeImgBtn = document.getElementById('closeImage');
+
+    const preview = document.getElementById('previewImage');
+
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.classList.remove('tw:hidden'); // show the image
+                label.classList.add('tw:hidden');
+                closeImgBtn.classList.remove('tw:hidden');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    closeImgBtn.addEventListener('click', function () {
+        preview.src = '#';
+        preview.classList.add('tw:hidden'); // hide the image
+        label.classList.remove('tw:hidden');
+        closeImgBtn.classList.add('tw:hidden');
+    });
+</script>
+
+<script>
+    const errorMessage = @Model.ErrorMessage;
+    console.log(errorMessage);
+
+    if (errorMessage) {
+        alert(errorMessage);
+    }
+</script>
